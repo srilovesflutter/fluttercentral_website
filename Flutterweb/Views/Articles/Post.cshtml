@@ -1,0 +1,256 @@
+﻿
+@using Flutterweb.Models
+@model ArticleCommentModel
+
+@{
+    ViewBag.Title = @Html.DisplayFor(model => model.article.Title);
+
+}
+
+<style>
+    .hidden {
+        display: none;
+    }
+
+    .bnr:hover {
+        cursor: pointer;
+        text-decoration: none;
+    }
+    .navigationbtns{
+        color: grey;
+    }
+
+        .navigationbtns:hover {
+            color: black;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+    .navigationbtns:hover .smallnavigationtitle {
+        color: black;
+        text-decoration: none;
+        font-style: normal;
+        font-weight: 500;
+    }
+
+    .smallnavigationtitle
+    {
+        color: gray;
+        font-style:italic;
+    }
+
+</style>
+
+                <!-- Ezoic - MainAd - top_of_page -->
+                <div id="ezoic-pub-ad-placeholder-101">
+                    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+                    <!-- Fluttercentralads -->
+                    <ins class="adsbygoogle"
+                         style="display:block"
+                         data-ad-client="ca-pub-9799612439562237"
+                         data-ad-slot="1773362238"
+                         data-ad-format="auto"
+                         data-full-width-responsive="true"></ins>
+                    <script>
+                        (adsbygoogle = window.adsbygoogle || []).push({});
+                    </script>
+                </div>
+                <!-- End Ezoic - MainAd - top_of_page -->
+                <div>
+                    <div>
+                        <h1 style="word-break: break-all;">@Html.DisplayFor(model => model.article.Title)</h1>
+                        <p class="text-muted" style="font-size:12px;">
+                            This @Html.DisplayFor(model => model.article.Category) is posted by
+                            @Html.DisplayFor(model => model.article.Author)
+                            
+                            at @Html.DisplayFor(model => model.article.Submited)
+                        </p>
+                        @if (User.Identity.IsAuthenticated && (User.IsInRole("Admin") || User.Identity.Name == Model.article.Author))
+                        {
+                        <div class="alert alert-info">
+                            @Html.ActionLink("Edit", "Edit", new { id = Model.article.ID }) |
+                            @Html.ActionLink("Delete", "Delete", new { id = Model.article.ID }) |
+                            @Html.ActionLink("Add Contributor", "Create", new { id = Model.article.ID })
+                        </div>
+                        }
+                    </div>
+
+                    <div>
+
+                        <article>
+                            <div id="articlecontent" style="word-break:break-all; white-space:pre-wrap !important;">@Html.Raw(Model.article.Content) </div>
+                        </article>
+                    </div>
+
+                    <div>
+                        <p class="text-muted">
+                            Tags: @Html.DisplayFor(model => model.article.Tags)
+                        </p>
+
+
+                    </div>
+                    <hr />
+
+
+                    <div class="d-flex justify-content-between mb-3">
+                        <div class="p-2">
+                            @if (Model.article.Pagerarticle.previousId != 0)
+                            {
+                                <a href="@Url.Action("Post", new { id = Model.article.Pagerarticle.previousId })" class="navigationbtns">
+                                    <div class="d-flex justify-content-start mb-3">
+                                        <div class="p-2 align-self-center"></div>
+                                        <div class="p-2">
+                                            <span class="smallnavigationtitle">Previous</span> <br />
+                                            @Model.article.Pagerarticle.PreviousHeader
+                                        </div>
+                                    </div>
+                                </a>
+
+                            }
+                        </div>
+
+                        <div class="p-2 text-right">
+                            @if (Model.article.Pagerarticle.nextId != 0)
+                            {
+                                <a href="@Url.Action("Post", new { id = Model.article.Pagerarticle.nextId })" class="navigationbtns">
+                                    <div class="d-flex justify-content-end mb-3">
+                                        <div class="p-2">
+                                            <span class="smallnavigationtitle">Next</span> <br />
+                                            @Model.article.Pagerarticle.NextHeader
+                                        </div>
+                                        <div class="p-2 align-self-center">></div>
+                                    </div>
+                                </a>
+
+                            }
+
+                        </div>
+                    </div>
+
+                    <hr />
+
+                    <!-- Ezoic - In-Content Ad - mid_content -->
+                    <div id="ezoic-pub-ad-placeholder-103">
+                        <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+                        <!-- Fluttercentralads -->
+                        <ins class="adsbygoogle"
+                             style="display:block"
+                             data-ad-client="ca-pub-9799612439562237"
+                             data-ad-slot="1773362238"
+                             data-ad-format="auto"
+                             data-full-width-responsive="true"></ins>
+                        <script>
+                            (adsbygoogle = window.adsbygoogle || []).push({});
+                        </script>
+                    </div>
+                    <!-- End Ezoic - In-Content Ad - mid_content -->
+
+
+                </div>
+
+                <div>
+                    <div>
+                        <h5>@Model.Comments.Count() Comments</h5>
+
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            @*@Html.Partial("_CommentCreate", new Comment { Article_ID = Model.article.ID, Username = User.Identity.Name })*@
+                        }
+                        else
+                        {
+
+                            <div class="form-group">
+
+                                <a href="~/Account/Login">Login</a> to comment.
+
+                            </div>
+                        }
+                    </div>
+                    <div>
+                        <h5>Recent Comments</h5>
+                        <hr />
+                        <div class="container" style="padding-left:0;">
+                            @{
+                                if (@Model.Comments.Count() != 0)
+                                {
+
+                                    foreach (var comment in @Model.Comments.Reverse())
+                                    {
+                                        if (comment.Level == 0)
+                                        {
+                                            <div class="media well-lg padding0">
+                                                <div class="pull-left top">
+                                                    <img src="~/Images/ProfileTemplate.png" class="media-object" style="max-width:50px; max-height:50px;" />
+                                                </div>
+                                                <div class="media-body">
+                                                    <p class="text-muted" style="font-size:12px;">@comment.Username.Substring(0, @comment.Username.IndexOf('@'))  at @comment.CommentedOn.ToShortDateString()</p>
+                                                    <p>@comment.Comments</p>
+
+
+                                                    @if (User.Identity.IsAuthenticated)
+                                                    {
+                                                        <button type="button" onclick="EnableReply(this)" class="btn btn-primary btn-xs" style="margin-bottom:2px;">Reply</button>
+
+                                                        <div class="hidden ReplyCommentDiv">
+                                                            @*@Html.Partial("_CommentCreate", new Comment { Article_ID = Model.article.ID, Username = User.Identity.Name, Level = 1, RootID = comment.ID })*@
+                                                        </div>
+                                                    }
+                                                    else
+                                                    {
+                                                        <div class="form-group small">
+                                                            <a href="~/Account/Login">Login</a> to Reply.
+                                                        </div>
+                                                    }
+
+                                                    @foreach (var replycomment in @Model.Comments.Reverse())
+                                                    {
+                                                        if (replycomment.Level == 1 && replycomment.RootID == comment.ID && replycomment.Article_ID == comment.Article_ID)
+                                                        {
+                                                            <div class="media well-sm">
+                                                                <div class="pull-left top">
+                                                                    <img src="~/Images/ProfileTemplate.png" class="media-object" style="max-width:30px; max-height:30px;" />
+                                                                </div>
+                                                                <div class="media-body">
+                                                                    <p class="text-muted small">@replycomment.Username.Substring(0, @comment.Username.IndexOf('@')) at @replycomment.CommentedOn.ToShortDateString()</p>
+                                                                    <small>@replycomment.Comments</small>
+
+                                                                </div>
+                                                            </div>
+                                                        }
+                                                    }
+                                                </div>
+                                            </div>
+                                            <hr>
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    <div class="alert alert-success">
+                                        <strong>Be the first to Comment.</strong>  You can ask a Query or Share your toughts or Just say thanks.
+                                    </div>
+                                }
+                            }
+                        </div>
+                    </div>
+                    <div class="card-footer">End of Comments</div>
+
+                </div>
+
+
+                <hr />
+
+
+
+            @section Scripts {
+                <script type="text/javascript">
+                    function EnableReply(obj) {
+                        $(obj).next(".ReplyCommentDiv").removeClass("hidden");
+                    }
+                    var adscount = 0;
+                    $(document).ready()
+                    {
+                        $('#articlecontent').html(container.replace(/##FlutterCentralAds##/g, ''));
+                    }
+                </script>
+            }

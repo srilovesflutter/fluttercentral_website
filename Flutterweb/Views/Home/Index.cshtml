@@ -1,0 +1,118 @@
+﻿@using System.Data
+@model DataSet
+
+@{
+    ViewBag.Title = "Home";
+
+    System.Text.RegularExpressions.Regex r = new System.Text.RegularExpressions.Regex(@"<(\w+)\b(?:\s+[\w\-.:]+(?:\s*=\s*(?:""[^""]*""|'[^']*'|[\w\-.:]+))?)*\s*/?>\s*</\1\s*>");
+
+}
+
+<style>
+    .LabListHeading {
+        border-bottom-color: red;
+        border-bottom-width: 2px;
+        border-bottom-style: solid;
+    }
+
+        .LabListHeading:hover {
+            border-bottom-color: green;
+            border-bottom-width: 2px;
+            border-bottom-style: solid;
+            background-color: #E0E0E0;
+        }
+
+    .shortcontent {
+        text-overflow: ellipsis;
+        overflow: hidden;
+        height: 100px;
+    }
+
+
+    a.stretched-link {
+        color: black !important;
+        text-decoration: none !important;
+    }
+
+        a.stretched-link:hover {
+            color: #1573b7 !important;
+            text-decoration: none !important;
+        }
+
+
+    .welcomebackground {
+        background-image: url("../Images/WelcomeBackground.JPG");
+        background-color: #cccccc;
+        height: 250px;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+        position: relative;
+        color: white;
+    }
+
+    .h2, h2 {
+        font-size: 25px;
+    }
+</style>
+
+
+
+        @if (!Context.Request.Path.ToString().ToLower().Contains("articles"))
+        {
+
+            <div class="container">
+                <h1>Welcome to  FlutterCentral</h1>
+                <p class="lead">
+
+                    Flutter is Google’s mobile app SDK for crafting high-quality native interfaces on iOS and Android in record time. Flutter works with existing code, is used by developers and organizations around the world, and is free and open source.
+                    Here in Fluttercentral, you can read articles or ask questions.
+                    <br />
+
+                </p>
+            </div>
+
+
+        }
+        <!-- Ezoic - MainAd - top_of_page -->
+        <div id="ezoic-pub-ad-placeholder-101">
+            <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+            <!-- Fluttercentralads -->
+            <ins class="adsbygoogle"
+                 style="display:block"
+                 data-ad-client="ca-pub-9799612439562237"
+                 data-ad-slot="1773362238"
+                 data-ad-format="auto"
+                 data-full-width-responsive="true"></ins>
+            <script>
+                (adsbygoogle = window.adsbygoogle || []).push({});
+            </script>
+        </div>
+        <!-- End Ezoic - MainAd - top_of_page -->
+
+        <h1 class="display-4">Recent Articles</h1>
+        <hr />
+
+
+        <div class="articleslist_@ViewBag.index">
+
+        </div>
+        <br />
+        <button type="button" class="btn btn-success loadbutton" onclick="loadview(this)">Click here for more</button>
+
+        <span class="index invisible">@ViewBag.index</span>
+
+
+<script>
+    function loadview(obj) {
+
+        var index = $(obj).next(".index").text();
+        $(obj).next(".index").text(parseInt(index) + 1);
+
+        $(obj).closest("div").find("div.articleslist_" + index).append("<div style=\"text-align:center; padding: 5px 0 5px 0;\"><div class=\"spinner-border text-muted\"></div></div>");
+        $(obj).closest("div").find("div.articleslist_" + index).load("/Home/_IndexArticles", { pageindex: index.trim(), viewName: "_IndexArticles" });
+    }
+    $(document).ready(function () {
+        $(".loadbutton").click();
+    });
+</script>
